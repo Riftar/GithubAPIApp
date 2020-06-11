@@ -25,7 +25,7 @@ class UserRepository {
     }
 
     fun getUserByQuery(query: String, page: Int, context: Context?) : LiveData<List<User>> {
-        api.getUserByQuery(query = query, page = page, perPage = 20)
+        api.getUserByQuery(query = query, page = page, perPage = 10)
             .enqueue(object : Callback<GetSearchUserResponse>{
                 override fun onResponse(call: Call<GetSearchUserResponse>, response: Response<GetSearchUserResponse>) {
                     if (response.isSuccessful) {

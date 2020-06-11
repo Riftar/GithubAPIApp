@@ -11,4 +11,10 @@ class User {
 
     @SerializedName("avatar_url")
     var avatarUrl: String? = null
+
+    constructor(login: String?, id: Int?, avatarUrl: String?) {
+        this.login = login
+        this.id = id
+        this.avatarUrl = avatarUrl
+    }
 }

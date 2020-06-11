@@ -13,12 +13,15 @@ import com.riftar.githubapi.R
 import com.riftar.githubapi.db.entities.User
 import kotlinx.android.synthetic.main.item_user.view.*
 
-class UsersAdapter: RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+private const val TAG = "debug"
+class UsersAdapter(items: ArrayList<User>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     private var onItemClickCallback: OnItemClickCallback? = null
-    private var listItem: List<User> = ArrayList()
+    private var listItem: ArrayList<User> = items
+    
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: User) {
+        fun bind(item: User, position: Int) {
             val tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
+            val tvNumber = itemView.findViewById<TextView>(R.id.tvNumber)
             with(itemView) {
                 Glide.with(itemView.context)
                     .load(item.avatarUrl)
@@ -26,6 +29,7 @@ class UsersAdapter: RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
                     .into(ivUserImage)
             }
             tvUserName.text = item.login
+            tvNumber.text = position.toString()
         }
 
     }
@@ -41,12 +45,12 @@ class UsersAdapter: RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(listItem[position])
+        holder.bind(listItem[position],position)
     }
     fun setItem(listItem: List<User>){
         if (listItem != null) {
             Log.d(ContentValues.TAG, "setItem")
-            this.listItem = listItem
+            this.listItem.addAll(listItem)
         }
     }
 
@@ -55,5 +59,13 @@ class UsersAdapter: RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     }
     interface OnItemClickCallback {
         fun onItemClicked(data: User)
+    }
+
+    fun append(listItem: List<User>){
+        for (item in listItem){
+            this.listItem.add(item)
+        }
+        Log.d(TAG, "append: change")
+        notifyItemInserted(listItem.size-1)
     }
 }
