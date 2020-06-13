@@ -11,6 +11,7 @@ class MyApp: Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin(this, listOf(
+            //dbModule,
             repositoryModule,
             uiModule
         ))

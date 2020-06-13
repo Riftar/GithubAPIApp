@@ -8,11 +8,11 @@ import com.riftar.githubapi.db.entities.User
 
 data class GetSearchUserResponse (
     @SerializedName("total_count")
-    val totalCount: Int?,
+    val totalCount: Int,
 
     @SerializedName("incomplete_results")
-    val incompleteResults: Boolean?,
+    val incompleteResults: Boolean,
 
     @SerializedName("items")
-    val items: List<User>?
+    val items: List<User>
 )

@@ -1,6 +1,7 @@
 package com.riftar.githubapi.rest
 
 import com.riftar.githubapi.db.entities.User
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -13,6 +14,6 @@ interface API {
         @Query("q") query: String,
         @Query("per_page") perPage: Int,
         @Query("page") page: Int
-    ): Call<GetSearchUserResponse>
+    ): Single<GetSearchUserResponse>
 
 }
