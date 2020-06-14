@@ -29,58 +29,55 @@ import kotlin.math.log
 
 private const val TAG = "debug"
 class MainActivity2 : AppCompatActivity() {
-    lateinit var userPagedListRepository: UserPagedListRepository
     lateinit var mainActivityViewModel: MainActivityViewModel
     lateinit var userPagedListAdapter: SearchPageListAdapter
+    lateinit var apiService:API
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
-
-        val apiService: API = APIClient.getClient()
-        userPagedListRepository = UserPagedListRepository(apiService)
+        apiService = APIClient.getClient()
         mainActivityViewModel = getViewModel()
         userPagedListAdapter = SearchPageListAdapter()
         val linearLayoutManager = LinearLayoutManager(this)
 
         Log.d(TAG, "onCreate: tes")
-        if(mainActivityViewModel == null){
-            Log.d(TAG, "onCreate: EMPTY")
-        }
         rvUsers2.layoutManager = linearLayoutManager
         rvUsers2.setHasFixedSize(true)
         rvUsers2.adapter = userPagedListAdapter
 
-//        mainActivityViewModel.userPagedList.observe(this, Observer {
-//            Log.d(TAG, "onCreate: 1 $it.")
-//            userPagedListAdapter.submitList(it)
-//        })
+        mainActivityViewModel.isFetched.observe(this, Observer {
+            if (it){
+                observeData()
+            }
+        })
     }
 
     fun fetchData(keyword:String){
-        mainActivityViewModel.fetchUser(keyword).observe(this, Observer { items ->
-            Log.d(TAG, "onCreate: called $items")
-            for (item in items){
-                Log.d(TAG, "onCreate: 2 ${item.login}")
-            }
-            userPagedListAdapter.submitList(items)
-        })
 
-        mainActivityViewModel.networkState.observe(this, Observer {
+        Log.d(TAG, "fetchData: ")
+        mainActivityViewModel.fetchLiveUserPagedList(keyword)
+        observeData()
+    }
+
+    private fun observeData() {
+        mainActivityViewModel.userPagedList.observe(this, Observer {
+            Log.d(TAG, "onCreate: viewmodel receive data change")
+            if (it != null)
+            {
+                userPagedListAdapter.submitList(it)
+            }
+        })
+        mainActivityViewModel.getNetworkState().observe(this, Observer {
             progressBar.visibility = if (mainActivityViewModel.listIsEmpty() && it == NetworkState.LOADING) View.GONE else View.GONE
             tvError.visibility = if (mainActivityViewModel.listIsEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
-
-            if (mainActivityViewModel.listIsEmpty()!!){
-                userPagedListAdapter.setNetworkState(it)
-                Toast.makeText(this, "Null item", Toast.LENGTH_SHORT).show()
-            }
-
+            userPagedListAdapter.setNetworkState(it)
         })
     }
 
     private fun getViewModel(): MainActivityViewModel{
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return MainActivityViewModel(userPagedListRepository) as T
+                return MainActivityViewModel( apiService ) as T
             }
         })[MainActivityViewModel::class.java]
     }
@@ -94,7 +91,6 @@ class MainActivity2 : AppCompatActivity() {
             searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
-                        //TODO DISPLAY LOADING
                         fetchData(query)
                     }
                     return false
@@ -103,7 +99,6 @@ class MainActivity2 : AppCompatActivity() {
                 override fun onQueryTextChange(newText: String?): Boolean {
                    return false
                 }
-
             })
         }
 

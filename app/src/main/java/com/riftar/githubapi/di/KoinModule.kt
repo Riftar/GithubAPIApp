@@ -12,13 +12,13 @@ import org.koin.dsl.module.module
 val dbModule = module {
 //    single { MovieDB.getAppDataBase(context = get()) }
 //    factory { get<MovieDB>().movieDao() }
-    //factory { APIClient.getClient() }
+    factory { APIClient.getClient() }
 }
 val repositoryModule = module {
     single { UserRepository() }
     //single {UserPagedListRepository(get())}
 }
 val uiModule = module {
-    viewModel{ UserViewModel(get())}
-   // viewModel { MainActivityViewModel(get()) }
+//    viewModel{ UserViewModel(get())}
+//    viewModel { MainActivityViewModel(get()) }
 }
