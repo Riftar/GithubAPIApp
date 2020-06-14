@@ -21,7 +21,6 @@ class UsersAdapter(items: ArrayList<User>) : RecyclerView.Adapter<UsersAdapter.V
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: User, position: Int) {
             val tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
-            val tvNumber = itemView.findViewById<TextView>(R.id.tvNumber)
             with(itemView) {
                 Glide.with(itemView.context)
                     .load(item.avatarUrl)
@@ -29,7 +28,6 @@ class UsersAdapter(items: ArrayList<User>) : RecyclerView.Adapter<UsersAdapter.V
                     .into(ivUserImage)
             }
             tvUserName.text = item.login
-            tvNumber.text = position.toString()
         }
 
     }

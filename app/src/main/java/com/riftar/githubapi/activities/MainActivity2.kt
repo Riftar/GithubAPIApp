@@ -20,7 +20,6 @@ import com.riftar.githubapi.rest.APIClient
 import com.riftar.githubapi.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
 
-private const val TAG = "debug"
 class MainActivity2 : AppCompatActivity() {
     lateinit var mainActivityViewModel: MainActivityViewModel
     lateinit var userPagedListAdapter: SearchPageListAdapter
@@ -33,7 +32,6 @@ class MainActivity2 : AppCompatActivity() {
         userPagedListAdapter = SearchPageListAdapter()
         val linearLayoutManager = LinearLayoutManager(this)
 
-        Log.d(TAG, "onCreate: tes")
         rvUsers2.layoutManager = linearLayoutManager
         rvUsers2.setHasFixedSize(true)
         rvUsers2.adapter = userPagedListAdapter
@@ -52,15 +50,12 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     fun fetchData(keyword:String){
-
-        Log.d(TAG, "fetchData: ")
         mainActivityViewModel.fetchLiveUserPagedList(keyword)
         observeData()
     }
 
     private fun observeData() {
         mainActivityViewModel.userPagedList.observe(this, Observer {
-            Log.d(TAG, "onCreate: viewmodel receive data change")
             if (it != null)
             {
                 userPagedListAdapter.submitList(it)

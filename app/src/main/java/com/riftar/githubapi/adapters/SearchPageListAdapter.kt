@@ -48,7 +48,6 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
             itemClickCallback: OnItemClickCallback?
         ){
             val tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
-            val tvNumber = itemView.findViewById<TextView>(R.id.tvNumber)
             with(itemView) {
                 Glide.with(itemView.context)
                     .load(item?.avatarUrl)
@@ -56,7 +55,6 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
                     .into(ivUserImage)
             }
             tvUserName.text = item?.login
-            tvNumber.text = layoutPosition.toString()
             itemView.setOnClickListener {
                 if (item != null) {
                     itemClickCallback?.onItemClicked(item)
