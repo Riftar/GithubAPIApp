@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Github API</string>
+    <string name="app_name">Github Connect</string>
     <string name="end_of_list">This is the end of the list..</string>
     <string name="username">UserName</string>
     <string name="searchTitle">Search</string>
