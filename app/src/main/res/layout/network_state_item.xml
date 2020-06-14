@@ -5,13 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvErrorNetworkItem"
+    <ImageView
+        android:id="@+id/ivErrorNetworkItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error message"
-        android:layout_gravity="center"/>
-    
+        android:layout_margin="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_wrong"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tvEndOfList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/end_of_list"
+        android:visibility="gone"/>
     <ProgressBar
         android:id="@+id/progressBarNetworkItem"
         android:layout_width="wrap_content"

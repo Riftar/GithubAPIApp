@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Github API</string>
+    <string name="end_of_list">This is the end of the list..</string>
 </resources>

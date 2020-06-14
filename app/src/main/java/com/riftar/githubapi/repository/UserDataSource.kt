@@ -30,7 +30,7 @@ class UserDataSource(private val apiService: API, private val compositeDisposabl
                     },
                     {
                         networkState.postValue(NetworkState.ERROR)
-                        //Log.d("debug", "loadInitial: $it")
+                        Log.d("debug", "loadInitial: $it")
                     })
         )
     }
@@ -48,7 +48,7 @@ class UserDataSource(private val apiService: API, private val compositeDisposabl
                     {
                         networkState.postValue(NetworkState.ERROR)
 
-                        Log.d("debug", "loadInitial: $it")
+                        Log.d("debug", "loadAfter: $it")
                     })
         )
     }

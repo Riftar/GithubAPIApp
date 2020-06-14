@@ -1,10 +1,9 @@
 package com.riftar.githubapi.adapters
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.paging.PagedListAdapter
@@ -18,7 +17,7 @@ import com.riftar.githubapi.repository.NetworkState
 import kotlinx.android.synthetic.main.item_user.view.*
 
 class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()) {
-
+    var itemClickCallback:OnItemClickCallback? = null
     val USER_VIEW_TYPE = 1
     val NETWORK_VIEW_TYPE = 2
     private var networkState : NetworkState? = null
@@ -37,14 +36,17 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == USER_VIEW_TYPE){
-            (holder as UserItemViewHolder).bind(getItem(position))
+            (holder as UserItemViewHolder).bind(getItem(position), itemClickCallback)
         } else{
             (holder as NetworkStateItemViewHolder).bind(networkState)
         }
     }
 
     class UserItemViewHolder(view: View):RecyclerView.ViewHolder(view){
-        fun bind(item: User?){
+        fun bind(
+            item: User?,
+            itemClickCallback: OnItemClickCallback?
+        ){
             val tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
             val tvNumber = itemView.findViewById<TextView>(R.id.tvNumber)
             with(itemView) {
@@ -55,13 +57,19 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
             }
             tvUserName.text = item?.login
             tvNumber.text = layoutPosition.toString()
+            itemView.setOnClickListener {
+                if (item != null) {
+                    itemClickCallback?.onItemClicked(item)
+                }
+            }
         }
     }
 
     class NetworkStateItemViewHolder(view: View):RecyclerView.ViewHolder(view){
         fun bind(networkState: NetworkState?){
             val progressBarItem = itemView.findViewById<ProgressBar>(R.id.progressBarNetworkItem)
-            val tvErrorItem = itemView.findViewById<TextView>(R.id.tvErrorNetworkItem)
+            val ivErrorItem = itemView.findViewById<ImageView>(R.id.ivErrorNetworkItem)
+            val tvEndOfList = itemView.findViewById<TextView>(R.id.tvEndOfList)
             if (networkState != null && networkState == NetworkState.LOADING){
                 progressBarItem.visibility = View.VISIBLE
             } else{
@@ -69,14 +77,15 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
             }
 
             if (networkState != null && networkState == NetworkState.ERROR){
-                tvErrorItem.visibility = View.VISIBLE
-                tvErrorItem.text = networkState.msg
+                ivErrorItem.visibility = View.VISIBLE
+                tvEndOfList.visibility = View.GONE
             }
             else if (networkState != null && networkState == NetworkState.END_OF_LIST){
-                tvErrorItem.visibility = View.VISIBLE
-                tvErrorItem.text = networkState.msg
+                ivErrorItem.visibility = View.GONE
+                tvEndOfList.text = networkState.msg
             } else{
-                tvErrorItem.visibility = View.GONE
+                ivErrorItem.visibility = View.GONE
+                tvEndOfList.visibility = View.GONE
             }
         }
     }
@@ -122,5 +131,12 @@ class SearchPageListAdapter : PagedListAdapter<User, RecyclerView.ViewHolder>(Us
         } else if (hasExtraRow && previousNetworkState != newNetworkState) {
             notifyItemChanged(itemCount-1)
         }
+    }
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.itemClickCallback = onItemClickCallback
+    }
+    interface OnItemClickCallback {
+        fun onItemClicked(data: User?)
     }
 }

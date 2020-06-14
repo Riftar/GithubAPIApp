@@ -1,13 +1,10 @@
 package com.riftar.githubapi.activities
 
-import android.app.SearchManager
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -16,16 +13,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.riftar.githubapi.R
 import com.riftar.githubapi.adapters.SearchPageListAdapter
+import com.riftar.githubapi.db.entities.User
 import com.riftar.githubapi.repository.NetworkState
-import com.riftar.githubapi.repository.UserPagedListRepository
 import com.riftar.githubapi.rest.API
 import com.riftar.githubapi.rest.APIClient
 import com.riftar.githubapi.viewmodel.MainActivityViewModel
-import com.riftar.githubapi.viewmodel.UserViewModel
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main2.*
-import org.koin.android.ext.android.inject
-import kotlin.math.log
 
 private const val TAG = "debug"
 class MainActivity2 : AppCompatActivity() {
@@ -44,6 +37,12 @@ class MainActivity2 : AppCompatActivity() {
         rvUsers2.layoutManager = linearLayoutManager
         rvUsers2.setHasFixedSize(true)
         rvUsers2.adapter = userPagedListAdapter
+        userPagedListAdapter.setOnItemClickCallback(object :
+            SearchPageListAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: User?) {
+                Toast.makeText(this@MainActivity2, "${data?.login}", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         mainActivityViewModel.isFetched.observe(this, Observer {
             if (it){
@@ -69,7 +68,9 @@ class MainActivity2 : AppCompatActivity() {
         })
         mainActivityViewModel.getNetworkState().observe(this, Observer {
             progressBar.visibility = if (mainActivityViewModel.listIsEmpty() && it == NetworkState.LOADING) View.GONE else View.GONE
-            tvError.visibility = if (mainActivityViewModel.listIsEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
+            tvError.visibility = if ( it == NetworkState.ERROR) View.VISIBLE else View.GONE
+            ivNotFound.visibility = if (mainActivityViewModel.listIsEmpty() && it == NetworkState.LOADED) View.VISIBLE else  View.GONE
+
             userPagedListAdapter.setNetworkState(it)
         })
     }
@@ -95,13 +96,11 @@ class MainActivity2 : AppCompatActivity() {
                     }
                     return false
                 }
-
                 override fun onQueryTextChange(newText: String?): Boolean {
                    return false
                 }
             })
         }
-
         return super.onCreateOptionsMenu(menu)
     }
 }
